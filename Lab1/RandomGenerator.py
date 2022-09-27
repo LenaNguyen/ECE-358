@@ -7,6 +7,7 @@ import statistics
 lambd = 75
 number = 1000
 
+
 def exp_rand(lamb, num):
     ret = []
     for _ in range(0, num):
@@ -16,11 +17,12 @@ def exp_rand(lamb, num):
         ret.append(distr)
     return ret
 
+
 dist = exp_rand(lambd, number)
 mean = statistics.mean(dist)
 varianc = statistics.variance(dist)
 
-count, bins, ignored = plt.hist(dist, 14, density = True)
+count, bins, ignored = plt.hist(dist, 14, density=True)
 plt.show()
 print(mean)
 print(varianc)
