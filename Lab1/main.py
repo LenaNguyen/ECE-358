@@ -33,15 +33,17 @@ def m_m_1_queue():
 
     prev_en = simulation.en
     prev_p_idle = simulation.p_idle
-    time_multiplier = 2
-    simulation = MM1QueueSim(T*time_multiplier, C, rho_values[0], L)
-    simulation.run()
-    en = simulation.en
-    p_idle = simulation.p_idle
+
+    # TODO: figure out simulation time where there is only a 5% change
+    # time_multiplier = 2
+    # simulation = MM1QueueSim(T*time_multiplier, C, rho_values[0], L)
+    # simulation.run()
+    # en = simulation.en
+    # p_idle = simulation.p_idle
 
     print([prev_en, prev_p_idle])
-    print([en, p_idle])
-    print([abs(prev_en - en) / prev_en, abs(prev_p_idle - p_idle) / prev_p_idle])
+    # print([en, p_idle])
+    # print([abs(prev_en - en) / prev_en, abs(prev_p_idle - p_idle) / prev_p_idle])
     """
 	Generate Packet Arrival
 		lambda = rho * C / L
