@@ -23,27 +23,48 @@ def question1():
 
 
 def m_m_1_queue():
-    # rho values are 0.25 to 0.95
+    # rho values are 0.25 > to < 0.95 with a 0.1 step
     rho_values = [0.35, 0.45, 0.55, 0.65, 0.75, 0.85]
+    sim_time_found = False
+    time_multiplier = 1
+
     T = 1000
     L = 2000
     C = 1000000
-    simulation = MM1QueueSim(T, C, rho_values[0], L)
-    simulation.run()
+    prev_en_values = []
+    prev_p_idle_values = []
+    en_values = []
+    p_idle_values = []
 
-    prev_en = simulation.en
-    prev_p_idle = simulation.p_idle
+    while not sim_time_found:
+        for rho in rho_values:
+            simulation = MM1QueueSim(time_multiplier*T, C, rho, L)
+            simulation.run()
 
-    # TODO: figure out simulation time where there is only a 5% change
-    # time_multiplier = 2
-    # simulation = MM1QueueSim(T*time_multiplier, C, rho_values[0], L)
-    # simulation.run()
-    # en = simulation.en
-    # p_idle = simulation.p_idle
+            en_values.append(simulation.en)
+            p_idle_values.append(simulation.p_idle)
 
-    print([prev_en, prev_p_idle])
-    # print([en, p_idle])
-    # print([abs(prev_en - en) / prev_en, abs(prev_p_idle - p_idle) / prev_p_idle])
+        if len(prev_en_values) > 0 and len(prev_p_idle_values) > 0:
+            en_percent_diff_sum = 0
+            p_idle_percent_diff_sum = 0
+            for i in range(len(rho_values)):
+                en_percent_diff_sum += 100 * \
+                    abs(prev_en_values[i] - en_values[i]) / prev_en_values[i]
+                p_idle_percent_diff_sum += 100 * \
+                    abs(prev_p_idle_values[i] -
+                        p_idle_values[i]) / prev_p_idle_values[i]
+
+            avg_en_diff = en_percent_diff_sum / len(rho_values)
+            avg_p_idle_diff = p_idle_percent_diff_sum / len(rho_values)
+            print([avg_en_diff, avg_p_idle_diff])
+            sim_time_found = True
+
+        prev_en_values = en_values
+        prev_p_idle_values = p_idle_values
+        en_values = []
+        p_idle_values = []
+        time_multiplier += 1
+
     """
 	Generate Packet Arrival
 		lambda = rho * C / L

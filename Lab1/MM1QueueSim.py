@@ -6,19 +6,17 @@ O_MULTIPLIER = 5
 
 
 class MM1QueueSim:
-    __arrivals = []
-    __test = []  # TODO: Remove
-    __departures = []
-    __observers = []
-    __all_events = []
-    p_idle = 0
-    en = 0
-
     def __init__(self, simulation_time, transmission_rate, utilization, avg_length):
         self.T = simulation_time
         self.C = transmission_rate
         self.rho = utilization
         self.L = avg_length
+        self.p_idle = 0
+        self.en = 0
+        self.__arrivals = []
+        self.__departures = []
+        self.__observers = []
+        self.__all_events = []
 
     def gen_arrivals(self):
         _lambda = self.rho * self.C / self.L
@@ -26,16 +24,12 @@ class MM1QueueSim:
         # populate with first event to avoid indexing issues
         increment = RandomGenerator.gen_exponential_val(_lambda)
         self.__arrivals.append(Event(EventType.ARRIVAL, increment))
-        self.__test.append(increment)
 
         # generate arrival events until the last event time is greater than simulation time
         # for each arrival, generate a packet length
         while self.__arrivals[-1].time <= self.T:
             increment = RandomGenerator.gen_exponential_val(_lambda)
             packet_length = RandomGenerator.gen_exponential_val(1/self.L)
-
-            # TODO: Remove
-            self.__test.append(increment)
 
             event = Event(EventType.ARRIVAL,
                           self.__arrivals[-1].time + increment, packet_length)
@@ -107,13 +101,14 @@ class MM1QueueSim:
 
         self.en = packets_in_queue / no
         self.p_idle = idle_count / no
-        print("process_events")
-        print([self.en, self.p_idle])
 
     def run(self):
+        print("Running MM1 Queue Simulation for T={} and rho={}".format(
+            self.T, self.rho))
         self.gen_arrivals()
         self.gen_departures()
         self.gen_observers()
         self.__all_events = self.__arrivals + self.__departures + self.__observers
         self.__all_events.sort(key=lambda e: e.time)
         self.process_events()
+        print("E[N]={}  P_idle={}".format(self.en, self.p_idle))
