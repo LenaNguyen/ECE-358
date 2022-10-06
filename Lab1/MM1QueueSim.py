@@ -1,6 +1,5 @@
 from Event import EventType, Event
 import RandomGenerator
-import matplotlib.pyplot as plt
 
 O_MULTIPLIER = 5
 
@@ -23,7 +22,9 @@ class MM1QueueSim:
         # **Generate Arrivals**
         # populate with first event to avoid indexing issues
         increment = RandomGenerator.gen_exponential_val(_lambda)
-        self.__arrivals.append(Event(EventType.ARRIVAL, increment))
+        packet_length = RandomGenerator.gen_exponential_val(1/self.L)
+        self.__arrivals.append(
+            Event(EventType.ARRIVAL, increment, packet_length))
 
         # generate arrival events until the last event time is greater than simulation time
         # for each arrival, generate a packet length
@@ -57,9 +58,6 @@ class MM1QueueSim:
                 time = self.__departures[i-1].time + service_time
 
             self.__departures.append(Event(EventType.DEPARTURE, time))
-
-        # Remove last event because it exceeds T
-        self.__departures.pop
 
     def gen_observers(self):
         _lambda = self.rho * self.C / self.L

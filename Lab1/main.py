@@ -1,7 +1,8 @@
-import numpy as np
+import matplotlib.pyplot as plt
 import RandomGenerator
 import statistics
 from MM1QueueSim import MM1QueueSim
+from MM1KQueueSim import MM1KQueueSim
 
 
 def question1():
@@ -24,7 +25,7 @@ def question1():
 
 def m_m_1_queue():
     # rho values are 0.25 > to < 0.95 with a 0.1 step
-    rho_values = [0.35, 0.45, 0.55, 0.65, 0.75, 0.85]
+    rho_values = [0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.95]
     sim_time_found = False
     time_multiplier = 1
 
@@ -56,8 +57,11 @@ def m_m_1_queue():
 
             avg_en_diff = en_percent_diff_sum / len(rho_values)
             avg_p_idle_diff = p_idle_percent_diff_sum / len(rho_values)
-            print([avg_en_diff, avg_p_idle_diff])
-            sim_time_found = True
+
+            if avg_en_diff <= 5 and avg_p_idle_diff <= 5:
+                sim_time_found = True
+                print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
+                    T*(time_multiplier - 1), T*time_multiplier))
 
         prev_en_values = en_values
         prev_p_idle_values = p_idle_values
@@ -65,45 +69,64 @@ def m_m_1_queue():
         p_idle_values = []
         time_multiplier += 1
 
-    """
-	Generate Packet Arrival
-		lambda = rho * C / L
-		T = 1000
 
-	Generate Packet Length
-		lambda = 1/2000
-		num_lengths = num_arrivals
-	
-	Generate service time
-		for each pkt(i), L(i) / C
+def m_m_1_k_queue():
+    # rho values are 0.5 to 1.5
+    rho_values = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
+    k_values = [10, 25, 50]
+    T = 1000
+    L = 2000
+    C = 1000000
 
-    """
+    t = T
 
-    """
-        Generate packet departure
-                if queue has packets. arrival pkt(i) >= departure(i - 1):
-                        departure time pkt(i) = departure pkt(i-1) + service time pkt(i)
-                else
-                        departure time pkt(i) = arrival pkt(i) + service time pkt(i) 
+    en_data_10 = []
+    p_loss_data_10 = []
 
-        """
+    for rho in rho_values:
+        sim = MM1KQueueSim(t, k_values[0], C, rho, L)
+        sim.run()
 
-    """
-	Generate Observer Events
-		generate random observation events according to packet arrival distirbution
-		rate of 5 times more than packet arrival
-			- lambda * 5
-		Observer Event - record state of queue:
-			- E[N]: avg of num packets in queue (Na - Nd) / No
-			- P_idle: proportion of time the server is idle (system is empty): is_idle = Na == Nd ? 1 : 0 
-			- P_Loss: probability the packet will be dropped, due to buffer being full
-	"""
-    """
-	Creating the DES?
-		Put all events in a list and sort them by time
-		Based on event type, increment Na, Nd, and No
-			if event is observer, calculate the performance metrics
-	"""
+        en_data_10.append(sim.en)
+        p_loss_data_10.append(sim.p_loss)
+
+    en_data_25 = []
+    p_loss_data_25 = []
+
+    for rho in rho_values:
+        sim = MM1KQueueSim(t, k_values[1], C, rho, L)
+        sim.run()
+
+        en_data_25.append(sim.en)
+        p_loss_data_25.append(sim.p_loss)
+
+    en_data_50 = []
+    p_loss_data_50 = []
+
+    for rho in rho_values:
+        sim = MM1KQueueSim(t, k_values[2], C, rho, L)
+        sim.run()
+
+        en_data_50.append(sim.en)
+        p_loss_data_50.append(sim.p_loss)
+
+    plt.scatter(rho_values, en_data_10)
+    plt.scatter(rho_values, en_data_25)
+    plt.scatter(rho_values, en_data_50)
+    plt.show()
+    plt.savefig('k_en_data.png')
+    plt.clf()
+    plt.scatter(rho_values, p_loss_data_10)
+    plt.scatter(rho_values, p_loss_data_25)
+    plt.scatter(rho_values, p_loss_data_50)
+    plt.show()
+    plt.savefig('k_p_loss_data.png')
 
 
-m_m_1_queue()
+def main():
+    m_m_1_queue()
+    # m_m_1_k_queue()
+
+
+if __name__ == "__main__":
+    main()
