@@ -60,16 +60,30 @@ def m_m_1_queue():
 
             if avg_en_diff <= 5 and avg_p_idle_diff <= 5:
                 sim_time_found = True
+                #: TODO: is there a better way to retrieve the T=1000 values? the only place i could get it to work was here but its kinda weird
                 print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
                     T*(time_multiplier - 1), T*time_multiplier))
+                plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
+                plt.plot(rho_values, prev_en_values)
+                plt.xlabel("Utilization of the queue")
+                plt.ylabel("Average number of packets in the buffer/queue")
+                plt.grid()
+                plt.savefig('en_data.png')
+                plt.clf()
+
+                plt.title("Proportion of time the server is idle over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
+                plt.plot(rho_values, prev_p_idle_values)
+                plt.xlabel("Utilization of the queue")
+                plt.ylabel("Proportion of time the server is idle")
+                plt.grid()
+                plt.savefig('p_idle_data.png')
 
         prev_en_values = en_values
         prev_p_idle_values = p_idle_values
         en_values = []
         p_idle_values = []
         time_multiplier += 1
-
-
+    
 def m_m_1_k_queue():
     # rho values are 0.5 to 1.5
     rho_values = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
@@ -110,22 +124,31 @@ def m_m_1_k_queue():
         en_data_50.append(sim.en)
         p_loss_data_50.append(sim.p_loss)
 
-    plt.scatter(rho_values, en_data_10)
-    plt.scatter(rho_values, en_data_25)
-    plt.scatter(rho_values, en_data_50)
-    plt.show()
+    plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1/K queue", loc='center', wrap=True)
+    plt.plot(rho_values, en_data_10, label="K=10")
+    plt.plot(rho_values, en_data_25, label="K=25")
+    plt.plot(rho_values, en_data_50, label="K=50")
+    plt.xlabel("Utilization of the queue")
+    plt.ylabel("Average number of packets in the buffer/queue")
+    plt.legend(loc="upper left")
+    plt.grid()
     plt.savefig('k_en_data.png')
     plt.clf()
-    plt.scatter(rho_values, p_loss_data_10)
-    plt.scatter(rho_values, p_loss_data_25)
-    plt.scatter(rho_values, p_loss_data_50)
-    plt.show()
+
+    plt.title("Packet loss probability over utilization of the queue in M/M/1/K queue", loc='center', wrap=True)
+    plt.plot(rho_values, p_loss_data_10, label="K=10")
+    plt.plot(rho_values, p_loss_data_25, label="K=25")
+    plt.plot(rho_values, p_loss_data_50, label="K=50")
+    plt.xlabel("Utilization of the queue")
+    plt.ylabel("Packet loss probability")
+    plt.legend(loc="upper left")
+    plt.grid()
     plt.savefig('k_p_loss_data.png')
 
 
 def main():
     m_m_1_queue()
-    # m_m_1_k_queue()
+    m_m_1_k_queue()
 
 
 if __name__ == "__main__":

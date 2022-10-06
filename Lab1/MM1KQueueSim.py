@@ -2,6 +2,7 @@ from Event import EventType, K_Event
 import RandomGenerator
 import heapq
 
+O_MULTIPLIER = 5
 
 class MM1KQueueSim:
     def __init__(self, simulation_time, K, transmission_rate, utilization, avg_length):
@@ -24,7 +25,6 @@ class MM1KQueueSim:
         packet_length = RandomGenerator.gen_exponential_val(1/self.L)
         self.__arrivals.append(
             K_Event(EventType.ARRIVAL, increment, 0, packet_length))
-        self.__test.append(increment)
 
         # generate arrival events until the last event time is greater than simulation time
         # for each arrival, generate a packet length
@@ -94,17 +94,17 @@ class MM1KQueueSim:
 
         self.en = packets_in_queue / no
         self.p_loss = loss_count / na
-        print("process_events")
-        print([self.en, self.p_loss])
 
     def run(self):
+        print("Running MM1K Queue Simulation for T={}, K={}, and rho={}".format(
+            self.T, self.K, self.rho))
         self.gen_arrivals()
         self.gen_observers()
 
         for event in self.__arrivals:
             heapq.heappush(self.__all_events, event)
-
         for event in self.__observers:
             heapq.heappush(self.__all_events, event)
 
         self.process_events()
+        print("E[N]={}  P_loss={}".format(self.en, self.p_loss))
