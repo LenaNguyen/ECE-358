@@ -51,7 +51,7 @@ def m_m_1_queue():
             for i in range(len(rho_values)):
                 en_diff = float(
                     100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
-                print(rho_values[i], en_diff)
+
                 if (en_diff > 5):
                     sim_time_found = False
                     break
@@ -126,7 +126,6 @@ def m_m_1_k_queue():
                 for i in range(len(rho_values)):
                     en_diff = float(
                         100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
-                    print(rho_values[i], en_diff)
 
                     if (en_diff > 5):
                         sim_time_found = False
