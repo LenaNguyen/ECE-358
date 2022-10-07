@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import RandomGenerator
-import statistics
+from Stats import mean, variance
 from MM1QueueSim import MM1QueueSim
 from MM1KQueueSim import MM1KQueueSim
 
@@ -15,9 +15,9 @@ def question1():
 
     expected_mean = 1/Q1_LAMBDA
     expected_variance = 1/(Q1_LAMBDA**2)
-    mean = statistics.mean(result)
-    _variance = statistics.variance(result)
-    print(f'Expected mean: {expected_mean}, Actual mean: {mean}')
+    m = mean(result)
+    _variance = variance(result)
+    print(f'Expected mean: {expected_mean}, Actual mean: {m}')
     print(
         f'Expected variance: {expected_variance}, Actual variance: {_variance}')
     print("\n")
@@ -45,44 +45,43 @@ def m_m_1_queue():
             en_values.append(simulation.en)
             p_idle_values.append(simulation.p_idle)
 
-        if len(prev_en_values) > 0 and len(prev_p_idle_values) > 0:
-            en_percent_diff_sum = 0
-            p_idle_percent_diff_sum = 0
+        if len(prev_en_values) > 0:
+            sim_time_found = True
             for i in range(len(rho_values)):
-                en_percent_diff_sum += 100 * \
-                    abs(prev_en_values[i] - en_values[i]) / prev_en_values[i]
-                p_idle_percent_diff_sum += 100 * \
-                    abs(prev_p_idle_values[i] -
-                        p_idle_values[i]) / prev_p_idle_values[i]
+                en_diff = float(100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
+                print(rho_values[i],en_diff)
+                if (en_diff > 5):
+                    print("Alerttttt")
+                    sim_time_found = False
+                    break
 
-            avg_en_diff = en_percent_diff_sum / len(rho_values)
-            avg_p_idle_diff = p_idle_percent_diff_sum / len(rho_values)
-
-            if avg_en_diff <= 5 and avg_p_idle_diff <= 5:
-                sim_time_found = True
-                #: TODO: is there a better way to retrieve the T=1000 values? the only place i could get it to work was here but its kinda weird
-                print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
-                    T*(time_multiplier - 1), T*time_multiplier))
-                plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
-                plt.plot(rho_values, prev_en_values)
-                plt.xlabel("Utilization of the queue")
-                plt.ylabel("Average number of packets in the buffer/queue")
-                plt.grid()
-                plt.savefig('en_data.png')
-                plt.clf()
-
-                plt.title("Proportion of time the server is idle over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
-                plt.plot(rho_values, prev_p_idle_values)
-                plt.xlabel("Utilization of the queue")
-                plt.ylabel("Proportion of time the server is idle")
-                plt.grid()
-                plt.savefig('p_idle_data.png')
-
+        if (sim_time_found):
+            time_multiplier-=1
+        else:
+            time_multiplier+=1
         prev_en_values = en_values
         prev_p_idle_values = p_idle_values
         en_values = []
         p_idle_values = []
-        time_multiplier += 1
+
+    print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
+        T*time_multiplier, T*(time_multiplier + 1)))
+    plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
+    plt.plot(rho_values, prev_en_values)
+    plt.xlabel("Utilization of the queue")
+    plt.ylabel("Average number of packets in the buffer/queue")
+    plt.grid()
+    plt.savefig('./Lab1/en_data.png')
+    plt.clf()
+
+    plt.title("Proportion of time the server is idle over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
+    plt.plot(rho_values, prev_p_idle_values)
+    plt.xlabel("Utilization of the queue")
+    plt.ylabel("Proportion of time the server is idle")
+    plt.grid()
+    plt.savefig('./Lab1/p_idle_data.png')
+    plt.clf()
+            
     
 def m_m_1_k_queue():
     # rho values are 0.5 to 1.5
@@ -92,13 +91,51 @@ def m_m_1_k_queue():
     L = 2000
     C = 1000000
 
-    t = T
+    min_T = 200
+    time_multiplier = 1
+
+    for k in k_values:
+        prev_en_values = []
+        en_values = []
+        sim_time_found = False
+        while not sim_time_found:
+
+            for rho in rho_values:
+                sim1 = MM1KQueueSim(min_T * time_multiplier, k, C, rho, L)
+                sim1.run()
+                en_values.append(sim1.en)
+
+            if len(prev_en_values) > 0:
+                sim_time_found = True
+                for i in range(len(rho_values)):
+                    en_diff = float(100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
+                    print(rho_values[i],en_diff)
+
+                    if (en_diff > 5):
+                        sim_time_found = False
+                        break
+
+            if (sim_time_found):
+                time_multiplier -= 1
+            else:
+                time_multiplier+=1
+            prev_en_values = en_values
+            en_values = []
+    
+    print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
+        min_T*time_multiplier, min_T*(time_multiplier+1)))
+
+    # the smallest T is 1000
+    if (min_T * time_multiplier) < T:
+        print("Smallest experimental T=1000. \n Since simulation is stable for T < 1000, it will be stable for T=1000")
+    
+    T = max(min_T * time_multiplier, T)
 
     en_data_10 = []
     p_loss_data_10 = []
 
     for rho in rho_values:
-        sim = MM1KQueueSim(t, k_values[0], C, rho, L)
+        sim = MM1KQueueSim(T, k_values[0], C, rho, L)
         sim.run()
 
         en_data_10.append(sim.en)
@@ -108,7 +145,7 @@ def m_m_1_k_queue():
     p_loss_data_25 = []
 
     for rho in rho_values:
-        sim = MM1KQueueSim(t, k_values[1], C, rho, L)
+        sim = MM1KQueueSim(T, k_values[1], C, rho, L)
         sim.run()
 
         en_data_25.append(sim.en)
@@ -118,7 +155,7 @@ def m_m_1_k_queue():
     p_loss_data_50 = []
 
     for rho in rho_values:
-        sim = MM1KQueueSim(t, k_values[2], C, rho, L)
+        sim = MM1KQueueSim(T, k_values[2], C, rho, L)
         sim.run()
 
         en_data_50.append(sim.en)
@@ -132,7 +169,7 @@ def m_m_1_k_queue():
     plt.ylabel("Average number of packets in the buffer/queue")
     plt.legend(loc="upper left")
     plt.grid()
-    plt.savefig('k_en_data.png')
+    plt.savefig('./Lab1/k_en_data.png')
     plt.clf()
 
     plt.title("Packet loss probability over utilization of the queue in M/M/1/K queue", loc='center', wrap=True)
@@ -143,7 +180,9 @@ def m_m_1_k_queue():
     plt.ylabel("Packet loss probability")
     plt.legend(loc="upper left")
     plt.grid()
-    plt.savefig('k_p_loss_data.png')
+    plt.savefig('./Lab1/k_p_loss_data.png')
+    plt.clf()
+
 
 
 def main():
