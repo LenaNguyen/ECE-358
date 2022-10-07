@@ -48,17 +48,18 @@ def m_m_1_queue():
         if len(prev_en_values) > 0:
             sim_time_found = True
             for i in range(len(rho_values)):
-                en_diff = float(100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
-                print(rho_values[i],en_diff)
+                en_diff = float(
+                    100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
+                print(rho_values[i], en_diff)
                 if (en_diff > 5):
                     print("Alerttttt")
                     sim_time_found = False
                     break
 
         if (sim_time_found):
-            time_multiplier-=1
+            time_multiplier -= 1
         else:
-            time_multiplier+=1
+            time_multiplier += 1
         prev_en_values = en_values
         prev_p_idle_values = p_idle_values
         en_values = []
@@ -66,7 +67,8 @@ def m_m_1_queue():
 
     print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
         T*time_multiplier, T*(time_multiplier + 1)))
-    plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
+    plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1 queue",
+              loc='center', wrap=True)
     plt.plot(rho_values, prev_en_values)
     plt.xlabel("Utilization of the queue")
     plt.ylabel("Average number of packets in the buffer/queue")
@@ -74,15 +76,16 @@ def m_m_1_queue():
     plt.savefig('./Lab1/en_data.png')
     plt.clf()
 
-    plt.title("Proportion of time the server is idle over utilization of the queue in M/M/1 queue", loc='center', wrap=True)
+    plt.title("Proportion of time the server is idle over utilization of the queue in M/M/1 queue",
+              loc='center', wrap=True)
     plt.plot(rho_values, prev_p_idle_values)
     plt.xlabel("Utilization of the queue")
     plt.ylabel("Proportion of time the server is idle")
     plt.grid()
     plt.savefig('./Lab1/p_idle_data.png')
     plt.clf()
-            
-    
+
+
 def m_m_1_k_queue():
     # rho values are 0.5 to 1.5
     rho_values = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
@@ -108,8 +111,9 @@ def m_m_1_k_queue():
             if len(prev_en_values) > 0:
                 sim_time_found = True
                 for i in range(len(rho_values)):
-                    en_diff = float(100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
-                    print(rho_values[i],en_diff)
+                    en_diff = float(
+                        100 * abs(prev_en_values[i] - en_values[i]) / prev_en_values[i])
+                    print(rho_values[i], en_diff)
 
                     if (en_diff > 5):
                         sim_time_found = False
@@ -118,17 +122,17 @@ def m_m_1_k_queue():
             if (sim_time_found):
                 time_multiplier -= 1
             else:
-                time_multiplier+=1
+                time_multiplier += 1
             prev_en_values = en_values
             en_values = []
-    
+
     print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
         min_T*time_multiplier, min_T*(time_multiplier+1)))
 
     # the smallest T is 1000
     if (min_T * time_multiplier) < T:
         print("Smallest experimental T=1000. \n Since simulation is stable for T < 1000, it will be stable for T=1000")
-    
+
     T = max(min_T * time_multiplier, T)
 
     en_data_10 = []
@@ -161,7 +165,8 @@ def m_m_1_k_queue():
         en_data_50.append(sim.en)
         p_loss_data_50.append(sim.p_loss)
 
-    plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1/K queue", loc='center', wrap=True)
+    plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1/K queue",
+              loc='center', wrap=True)
     plt.plot(rho_values, en_data_10, label="K=10")
     plt.plot(rho_values, en_data_25, label="K=25")
     plt.plot(rho_values, en_data_50, label="K=50")
@@ -172,7 +177,8 @@ def m_m_1_k_queue():
     plt.savefig('./Lab1/k_en_data.png')
     plt.clf()
 
-    plt.title("Packet loss probability over utilization of the queue in M/M/1/K queue", loc='center', wrap=True)
+    plt.title("Packet loss probability over utilization of the queue in M/M/1/K queue",
+              loc='center', wrap=True)
     plt.plot(rho_values, p_loss_data_10, label="K=10")
     plt.plot(rho_values, p_loss_data_25, label="K=25")
     plt.plot(rho_values, p_loss_data_50, label="K=50")
@@ -182,7 +188,6 @@ def m_m_1_k_queue():
     plt.grid()
     plt.savefig('./Lab1/k_p_loss_data.png')
     plt.clf()
-
 
 
 def main():
