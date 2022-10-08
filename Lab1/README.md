@@ -4,7 +4,8 @@ Run the following to execute the Makefile:
 
 > make
 
-To use the python file instead, run the following:
+To use the python file instead, install the modules matplotlib, numpy, heapq, and math.
+Then, run the following for a list of possible arguments:
 
 > python3 lab1/main.py --help
 > optional arguments:
