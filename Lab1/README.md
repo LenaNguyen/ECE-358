@@ -8,12 +8,14 @@ To use the python file instead, install the modules matplotlib, numpy, heapq, an
 Then, run the following for a list of possible arguments:
 
 > python3 lab1/main.py --help
-> optional arguments:
-> -h, --help show this help message and exit
-> -Q1, --question1 Execute question 1
-> -Q3, --question3 Execute question 3
-> -Q4, --question4 Execute question 4
-> -Q6, --question6 Execute question 6
+
+Optional arguments:
+
+* -h, --help show this help message and exit
+* -Q1, --question1 Execute question 1
+* -Q3, --question3 Execute question 3
+* -Q4, --question4 Execute question 4
+* -Q6, --question6 Execute question 6
 
 To execute question 1, run the following:
 
