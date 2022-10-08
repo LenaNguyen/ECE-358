@@ -3,6 +3,7 @@ import RandomGenerator
 from Stats import mean, variance
 from MM1QueueSim import MM1QueueSim
 from MM1KQueueSim import MM1KQueueSim
+import argparse
 
 
 def question1():
@@ -204,9 +205,29 @@ def m_m_1_k_queue():
 
 
 def main():
-    question4()
-    m_m_1_queue()
-    m_m_1_k_queue()
+    parser = argparse.ArgumentParser(description='ECE 358 Lab 1 DES')
+    parser.add_argument('-Q1', '--question1', action='store_true',
+                        help='Execute question 1')
+    parser.add_argument('-Q3', '--question3', action='store_true',
+                        help='Execute question 3')
+    parser.add_argument('-Q4', '--question4', action='store_true',
+                        help='Execute question 4')
+    parser.add_argument('-Q6', '--question6', action='store_true',
+                        help='Execute question 6')
+
+    args = parser.parse_args()
+
+    if args.question1:
+        question1()
+        exit()
+    elif args.question3:
+        m_m_1_queue()
+        exit()
+    elif args.question4:
+        question4()
+        exit()
+    else:
+        m_m_1_k_queue()
 
 
 if __name__ == "__main__":
