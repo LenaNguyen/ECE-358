@@ -12,11 +12,10 @@ class Event:
 
 
 class K_Event:
-    def __init__(self, type, time, id=-1, packet_length=0):
+    def __init__(self, type, time, packet_length=0):
         self.type = type
         self.time = time
         self.packet_length = packet_length
-        self.id = id
 
     def __lt__(self, other):
         return self.time < other.time

@@ -1,7 +1,6 @@
 from Event import EventType, K_Event
 import RandomGenerator
 import heapq
-from MM1QueueSim import MM1QueueSim
 
 O_MULTIPLIER = 5
 
@@ -39,12 +38,6 @@ class MM1KQueueSim:
 
         # Remove last event because it exceeds T
         self.__arrivals.pop
-
-    def gen_departures(self, curr_time, event):
-        # **Generate Departures**
-        # populate the first departure to avoid indexing issues
-        time = curr_time + (event.packet_length / self.C)
-        return K_Event(EventType.DEPARTURE, time)
 
     def gen_observers(self):
         _lambda = self.rho * self.C / self.L
