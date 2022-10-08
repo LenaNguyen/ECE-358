@@ -1,6 +1,7 @@
 from Event import EventType, K_Event
 import RandomGenerator
 import heapq
+from MM1QueueSim import MM1QueueSim
 
 O_MULTIPLIER = 5
 
@@ -62,22 +63,23 @@ class MM1KQueueSim:
         self.__observers.pop
 
     def process_events(self):
-        na = 0
-        nd = 0
-        no = 0
-        packets_in_queue = 0
-        loss_count = 0
-        q = 0
-        curr_departure = 0
+        na = 0 #total arrival events generated
+        nd = 0 #total departure events
+        no = 0 #total observer events
+        packets_in_queue = 0 #total packets observed in queue
+        loss_count = 0 #total packets lost
+        q = 0 #packets currently in the queue
+        curr_departure = 0 #latest departure time
 
-        # loop through each event in the sorted list
         while len(self.__all_events) > 0:
             event = heapq.heappop(self.__all_events)
             if (event.type == EventType.ARRIVAL):
                 na += 1
                 if (q < self.K):
                     service_time = event.packet_length / self.C
+                    # if the packet arrival time will be after the latest departure, there will be a gap of idle time
                     if (event.time > curr_departure):
+                        # adjust the departure time calculation
                         curr_departure = event.time
                     curr_departure += service_time
                     heapq.heappush(self.__all_events, K_Event(
