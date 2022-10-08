@@ -32,3 +32,6 @@ To execute question 4, run the following:
 To execute question 6, run the following:
 
 > python3 lab1/main.py -Q6
+
+Graphical outputs will be generated and saved to the current directory with M/M/1 results in en_data.png and p_idle_data.png
+and M/M/1/K results stored in k_en_data.png and k_p_loss_data.png. Please ensure eceubuntu connection allows graphics

@@ -66,7 +66,7 @@ def m_m_1_queue():
         en_values = []
         p_idle_values = []
 
-    print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
+    print("Percentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
         T*time_multiplier, T*(time_multiplier + 1)))
     plt.title("Average number of packets in the buffer/queue over utilization of the queue in M/M/1 queue",
               loc='center', wrap=True)
@@ -139,7 +139,7 @@ def m_m_1_k_queue():
             prev_en_values = en_values
             en_values = []
 
-    print("Precentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
+    print("Percentage difference in results for T={} and T={} is less than 5%. Simulation is stable.".format(
         min_T*time_multiplier, min_T*(time_multiplier+1)))
 
     # the smallest T is 1000
