@@ -24,7 +24,7 @@ class MM1KQueueSim:
         increment = RandomGenerator.gen_exponential_val(_lambda)
         packet_length = RandomGenerator.gen_exponential_val(1/self.L)
         self.__arrivals.append(
-            K_Event(EventType.ARRIVAL, increment, 0, packet_length))
+            K_Event(EventType.ARRIVAL, increment, packet_length))
 
         # generate arrival events until the last event time is greater than simulation time
         # for each arrival, generate a packet length
@@ -33,7 +33,7 @@ class MM1KQueueSim:
             packet_length = RandomGenerator.gen_exponential_val(1/self.L)
 
             event = K_Event(EventType.ARRIVAL,
-                            self.__arrivals[-1].time + increment, len(self.__arrivals), packet_length)
+                            self.__arrivals[-1].time + increment, packet_length)
             self.__arrivals.append(event)
 
         # Remove last event because it exceeds T
