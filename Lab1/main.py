@@ -90,7 +90,7 @@ def m_m_1_queue():
 
 def question4():
     print("**QUESTION 4**")
-    T = 2000
+    T = 2000 #stable T value obtained from question 3
     L = 2000
     C = 1000000
     rho = 1.2
