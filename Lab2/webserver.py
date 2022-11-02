@@ -46,13 +46,14 @@ while True:
             '\n\n' + content
 
     except FileNotFoundError:
+        content = 'File Not Found'
         resp = 'HTTP/1.0 404 NOT FOUND\n' +\
             'Date: {}\n'.format(date.today()) + \
             'Server: {}\n'.format(gethostname()) + \
             'Content-Length: {}\n'.format(len(content)) + \
             'Content-Type: {}\n'.format('text/html') + \
             'Connection: Closed' + \
-            '\n\nFile Not Found'
+            '\n\n' + content
 
     connection_socket.send(resp.encode())
     connection_socket.close()
