@@ -22,38 +22,41 @@ while True:
     connection_socket, addr = server_socket.accept()
     request = connection_socket.recv(2048).decode()
     headers = request.split("\n")
-    path = headers[0].split()[1]
-    if path[0] == '/':
-        path = path[1:]
 
-    try:
-        print("A")
-        print(headers)
-        print(path)
+    if len(headers[0].split()) > 1:
+        path = headers[0].split()[1]
+        if path[0] == '/':
+            path = path[1:]
+    if path:
+        try:
+            print("A")
+            print(headers)
+            print(path)
 
-        file = open(path)
-        content = file.read()
-        file.close()
-        mod_datetime = get_modified_datetime(path)
+            file = open(path)
+            content = file.read()
+            file.close()
+            mod_datetime = get_modified_datetime(path)
 
-        resp = 'HTTP/1.0 200 OK\n' + \
-            'Date: {}\n'.format(date.today()) + \
-            'Server: {}\n'.format(gethostname()) + \
-            'Last-Modified: {}\n'.format(mod_datetime) + \
-            'Content-Length: {}\n'.format(len(content)) + \
-            'Content-Type: {}\n'.format('text/html') + \
-            'Connection: Closed' + \
-            '\n\n' + content
+            resp = 'HTTP/1.0 200 OK\n' + \
+                'Date: {}\n'.format(date.today()) + \
+                'Server: {}\n'.format(gethostname()) + \
+                'Last-Modified: {}\n'.format(mod_datetime) + \
+                'Content-Length: {}\n'.format(len(content)) + \
+                'Content-Type: {}\n'.format('text/html') + \
+                'Connection: Closed' + \
+                '\n\n' + content
 
-    except FileNotFoundError:
-        content = 'File Not Found'
-        resp = 'HTTP/1.0 404 NOT FOUND\n' +\
-            'Date: {}\n'.format(date.today()) + \
-            'Server: {}\n'.format(gethostname()) + \
-            'Content-Length: {}\n'.format(len(content)) + \
-            'Content-Type: {}\n'.format('text/html') + \
-            'Connection: Closed' + \
-            '\n\n' + content
+        except FileNotFoundError:
+            content = 'File Not Found'
+            resp = 'HTTP/1.0 404 NOT FOUND\n' +\
+                'Date: {}\n'.format(date.today()) + \
+                'Server: {}\n'.format(gethostname()) + \
+                'Content-Length: {}\n'.format(len(content)) + \
+                'Content-Type: {}\n'.format('text/html') + \
+                'Connection: Closed' + \
+                '\n\n' + content
 
-    connection_socket.send(resp.encode())
+        connection_socket.send(resp.encode())
+
     connection_socket.close()
