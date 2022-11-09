@@ -39,7 +39,8 @@ def create_header_and_body(query, answer=None):
             for num in ip.split('.'):
                 rr += "{:02x}".format(int(num))
 
-    return hex(int(id+qr+opcode+aa+tc+rd+ra+z+rcode, 2)) + qdcount + ancount + nscount + arcount + qname + qtype + qclass + rr
+    resp = hex(int(id+qr+opcode+aa+tc+rd+ra+z+rcode, 2)) + qdcount + ancount + nscount + arcount + qname + qtype + qclass + rr
+    return resp[2:]
 
 
 def rand_key():

@@ -47,7 +47,7 @@ def main():
 
         UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         query = create_header_and_body(user_input)
-        UDPClientSocket.sendto(bytearray.fromhex(query[2:]), serverAddressPort)
+        UDPClientSocket.sendto(bytearray.fromhex(query), serverAddressPort)
 
         msgFromServer = UDPClientSocket.recvfrom(bufferSize)[0].hex()
         parse_response(msgFromServer)
