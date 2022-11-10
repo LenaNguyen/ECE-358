@@ -1,7 +1,7 @@
 import random
 
-def create_header_and_body(query, answer=None):
-    id = "{:04x}".format(int(rand_key(),2))
+def create_header_and_body(query, answer=None, id=None):
+    id = "{:04x}".format(int(rand_key(),2)) if id is None else id
 
     # flags
     qr = '0' if answer is None else '1'
@@ -56,10 +56,10 @@ def rand_key():
 
 def get_user_input_from_header_and_body(msg):
     body = msg[24:]
-    dom_len_octet = int(body[:2], 16)
-    dom = body[2:2+2*dom_len_octet]
-    org_len_octet = int(body[2+2*dom_len_octet:4+2*dom_len_octet], 16)
-    org = body[4+2*dom_len_octet:4+2*dom_len_octet+2*org_len_octet]
+    main_len_octet = int(body[:2], 16)
+    main = body[2:2+2*main_len_octet]
+    sec_len_octet = int(body[2+2*main_len_octet:4+2*main_len_octet], 16)
+    sec = body[4+2*main_len_octet:4+2*main_len_octet+2*sec_len_octet]
 
-    domain_name = bytes.fromhex(dom).decode('utf-8') + '.' + bytes.fromhex(org).decode('utf-8')
+    domain_name = bytes.fromhex(main).decode('utf-8') + '.' + bytes.fromhex(sec).decode('utf-8')
     return domain_name
