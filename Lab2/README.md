@@ -19,3 +19,5 @@ To execute GET requests
 
 To execute HEAD requests
 > python3 lab2/webclient.py -head
+
+The resulting reponses should look like the screenshots in Task 1 for the report. There should be three reponses for GET requests and three responses for the HEAD requests. If there is not, please rerun the above commands. 
