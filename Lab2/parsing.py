@@ -1,7 +1,7 @@
 import random
 
 def create_header_and_body(query, answer=None, id=None):
-    id = "{:04x}".format(int(rand_key(),2)) if id is None else id
+    id = "{:04x}".format(int(rand_id(),2)) if id is None else id
 
     # flags
     qr = '0' if answer is None else '1'
@@ -44,7 +44,7 @@ def create_header_and_body(query, answer=None, id=None):
     return resp
 
 
-def rand_key():
+def rand_id():
     id = ""
  
     for i in range(16):
@@ -55,11 +55,13 @@ def rand_key():
 
 
 def get_user_input_from_header_and_body(msg):
+    # it is known the header accounts for the first 24 values, the first values in the body is QNAME
     body = msg[24:]
     main_len_octet = int(body[:2], 16)
     main = body[2:2+2*main_len_octet]
     sec_len_octet = int(body[2+2*main_len_octet:4+2*main_len_octet], 16)
     sec = body[4+2*main_len_octet:4+2*main_len_octet+2*sec_len_octet]
 
+    # obtain the string representation of the domain name
     domain_name = bytes.fromhex(main).decode('utf-8') + '.' + bytes.fromhex(sec).decode('utf-8')
     return domain_name

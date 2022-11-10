@@ -43,7 +43,7 @@ def main():
     print("The server is ready to receive")
 
     while(True):
-
+        # obtain DNS query
         message, clientAddress = serverSocket.recvfrom(2048)
 
         clientMsg = message.decode()
@@ -52,10 +52,11 @@ def main():
         print("Request")
         print(r)
 
+        # determine the id of the query and the domain name contained
         domain_name = get_user_input_from_header_and_body(clientMsg)
         id = clientMsg[:4]
 
-        # Sending a reply to client
+        # send a reply to client
         dict_value = ip_dict[domain_name]
         res= create_header_and_body(domain_name, dict_value, id)
         r = ' '.join(res[i:i+2] for i in range(0, len(res), 2))
