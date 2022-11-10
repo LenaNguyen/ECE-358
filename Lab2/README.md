@@ -13,6 +13,7 @@ The resulting webpages should look like the screenshots in Task 1 of the report.
 
 
 Using a terminal, try running the following commands:
+
 To execute GET requests
 > python3 lab2/webclient.py -get
 
