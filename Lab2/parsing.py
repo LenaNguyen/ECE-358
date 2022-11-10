@@ -1,7 +1,7 @@
 import random
 
 def create_header_and_body(query, answer=None):
-    id = rand_key()
+    id = "{:04x}".format(int(rand_key(),2))
 
     # flags
     qr = '0' if answer is None else '1'
@@ -12,6 +12,7 @@ def create_header_and_body(query, answer=None):
     ra = '0'
     z = '000'
     rcode = '0000'
+    flags = "{:04x}".format(int(qr+opcode+aa+tc+rd+ra+z+rcode, 2))
 
     # other
     qdcount = "{:04x}".format(1)
@@ -39,8 +40,8 @@ def create_header_and_body(query, answer=None):
             for num in ip.split('.'):
                 rr += "{:02x}".format(int(num))
 
-    resp = hex(int(id+qr+opcode+aa+tc+rd+ra+z+rcode, 2)) + qdcount + ancount + nscount + arcount + qname + qtype + qclass + rr
-    return resp[2:]
+    resp = id + flags + qdcount + ancount + nscount + arcount + qname + qtype + qclass + rr
+    return resp
 
 
 def rand_key():

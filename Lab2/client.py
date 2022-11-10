@@ -1,5 +1,4 @@
 import socket
-import random
 import re
 from parsing import create_header_and_body, get_user_input_from_header_and_body
 
@@ -16,7 +15,7 @@ def parse_response(msgFromServer):
         ttl = int(parts[2], 16)
         length = int(parts[3], 16)
         msg = get_ip(parts[4])
-        print("{}: type {}, class {}, TTL {}, addr ({}) {}".format(domain_name,type,clss,ttl,length,msg))    
+        print("{}: type {}, class {}, TTL {}, addr ({}) {}".format(domain_name,type,clss,ttl,length,msg))
 
 
 def get_type(type):
@@ -36,8 +35,10 @@ def get_ip(msg):
 
 
 def main():
-    serverAddressPort   = ("127.0.0.1", 20001)
-    bufferSize          = 1024
+    serverIP     = "127.0.0.1"
+    serverPort   = 10500
+
+    clientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
     while True:
         user_input = input('Enter Domain Name: ')
@@ -45,14 +46,14 @@ def main():
         if user_input == 'end':
             break
 
-        UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        query = create_header_and_body(user_input)
-        UDPClientSocket.sendto(bytearray.fromhex(query), serverAddressPort)
+        msg = create_header_and_body(user_input)
+        clientSocket.sendto(msg.encode(), (serverIP, serverPort))
 
-        msgFromServer = UDPClientSocket.recvfrom(bufferSize)[0].hex()
-        parse_response(msgFromServer)
+        msgFromServer, serverAddress = clientSocket.recvfrom(2048)
+        parse_response(msgFromServer.decode())
         
     print("Session ended")
+    clientSocket.close()
 
 
 if __name__ == "__main__":

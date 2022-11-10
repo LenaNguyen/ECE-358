@@ -1,5 +1,4 @@
 import socket
-import random
 from parsing import create_header_and_body, get_user_input_from_header_and_body
 
 ip_dict = {
@@ -36,20 +35,18 @@ ip_dict = {
 }
 
 def main():
-    localIP     = "127.0.0.1"
-    localPort   = 20001
-    bufferSize  = 1024
+    serverIP     = "127.0.0.1"
+    serverPort   = 10500
 
-    UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-    UDPServerSocket.bind((localIP, localPort))
+    serverSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+    serverSocket.bind((serverIP, serverPort))
+    print("The server is ready to receive")
 
     while(True):
 
-        bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
-        message = bytesAddressPair[0]
-        address = bytesAddressPair[1]
+        message, clientAddress = serverSocket.recvfrom(2048)
 
-        clientMsg = message.hex()
+        clientMsg = message.decode()
         r = ' '.join(clientMsg[i:i+2] for i in range(0, len(clientMsg), 2))
         
         print("Request")
@@ -60,11 +57,12 @@ def main():
         # Sending a reply to client
         dict_value = ip_dict[domain_name]
         res= create_header_and_body(domain_name, dict_value)
-        r = ' '.join(res[i:i+2] for i in range(2, len(res), 2))
+        r = ' '.join(res[i:i+2] for i in range(0, len(res), 2))
+
         print("Response")
         print(r)
-        bytesToSend = bytearray.fromhex(res)
-        UDPServerSocket.sendto(bytesToSend, address)
+
+        serverSocket.sendto(res.encode(), clientAddress)
 
 
 if __name__ == "__main__":
